@@ -16,6 +16,11 @@ public class Dude {
     public TileMap map;
     public boolean holdingRock = false;
 
+    public boolean animating=false;
+    public String animatingSprite="";
+
+    private int frame=0;
+
     public Dude(TileMap t) {
         //the dude needs to be constructed with a map
         this.map = t;
@@ -73,6 +78,15 @@ public class Dude {
      *
      * @return
      */
+
+    public int setFrame(int frame) {
+        this.frame=frame;
+        return frame;
+    }
+
+    public int getFrame() {
+        return this.frame;
+    }
     private boolean _moveX() {
         int direction = this.orientation;
         boolean mayBeAbleToMove, moved,dudeWillHitWall,rockWillHitWall;

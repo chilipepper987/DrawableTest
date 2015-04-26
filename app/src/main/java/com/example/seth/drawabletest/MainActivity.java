@@ -1,5 +1,8 @@
 package com.example.seth.drawabletest;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
@@ -70,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
         //assign handlers to the control buttons
         Button W = (Button) findViewById(R.id.buttonW);
         Button A = (Button) findViewById(R.id.buttonA);
-        //Button S = (Button) findviewbyid(r.id.buttonS);
+        Button S = (Button) findViewById(R.id.buttonS);
         Button D = (Button) findViewById(R.id.buttonD);
         Button Rock = (Button) findViewById(R.id.buttonRock);
 
@@ -82,6 +85,42 @@ public class MainActivity extends ActionBarActivity {
             theDude.turnLeft();
             theDude.moveLeft();
             _reDraw();
+        });
+
+        S.setOnClickListener((v)->{
+            //try and animate the dude right
+
+
+            //we are animating the dude right
+            theDude.animating=true;
+            theDude.animatingSprite="right";
+            theDude.x++;
+            //new value animator. we are animating frames 0-6
+            ValueAnimator va = ValueAnimator.ofInt(0,6);
+            //set duration in millis. 7 frames, 2fps, 3500 millis
+            va.setDuration(500);
+            //what to do for each frame? increment the frame counter,
+            //and redraw
+            va.addUpdateListener((animation)->{
+                int frame = (int) animation.getAnimatedValue();
+                theDude.setFrame(frame);
+                _reDraw();
+            });
+            //what to do when finished? redraw a final time
+            //cant use a lambda here since there are multiple
+            //methods that could be passed here, so we have
+            //to use an anonymous class to specify it directly
+            va.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    MainActivity.theDude.animating=false;
+                    _reDraw();
+                }
+            });
+            //start the animation!
+            va.start();
+
         });
 
         //D is the right button
