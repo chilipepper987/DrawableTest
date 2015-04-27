@@ -25,7 +25,7 @@ public class TileMap {
 
         //...
 
-        Level level=HelperLib.readLevelFromFile(2);
+        Level level=HelperLib.readLevelFromFile(1);
         this.map=level.getMap();
         this.startX=level.getStartX();
         this.startY=level.getStartY();
@@ -138,6 +138,29 @@ public class TileMap {
             if (getOffsetX() + 21 < map[0].length) {
                 //the map is 21 wide, so the right edge is 21 (or 20?) steps to the right from the left edge
                 advanceLeft();
+                moved = -1;
+            }
+        }
+        return moved;
+    }
+
+    public int advanceY() {
+        int moved = 0;
+        int direction = this.dude.verticalOrientation;
+        if (direction == -1) {
+            //we just moved down. can we see the bottom?
+
+            if (getOffsetY() > 0) {
+                //the bottom is off screen. shift.
+                advanceUp();
+                moved = 1;
+            }
+        } else {
+            //we just moved up. can we see the top?
+
+            if (getOffsetY()+4 <= map.length) {
+
+                advanceDown();
                 moved = -1;
             }
         }

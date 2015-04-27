@@ -16,6 +16,7 @@ public class Dude {
     public static int xScale = 0;
     public static int yScale = 0;
     public int orientation = 1;
+    public int verticalOrientation;
     public TileMap map;
     public boolean holdingRock = false;
 
@@ -157,6 +158,7 @@ public class Dude {
             //drop down one
             this.y++;
             dropped++;
+            this.verticalOrientation=-1;
         }
         return dropped;
     }
@@ -234,7 +236,7 @@ public class Dude {
         //new value animator. we are animating frames 0-6
         ValueAnimator va = ValueAnimator.ofInt(0, 6);
         //set duration in millis.
-        va.setDuration(200);
+        va.setDuration(100);
         //what to do for each frame? increment the frame counter,
         //and redraw
         va.addUpdateListener((animation) -> {
@@ -270,6 +272,9 @@ public class Dude {
                 //if we have just advanced, and the edge of the map is not showing, then we need to shift
                 if (theDude.x > 12 && theDude.x < width - 8 || theDude.x<=12 && theDude.map.getOffsetX() > 0 || theDude.x>=width-8 && theDude.map.getOffsetX() < width-7) {
                     theDude.map.advanceX();
+                }
+                if (theDude.y > 3 && theDude.y < height || theDude.y<=4 && theDude.map.getOffsetY() > 0 || theDude.y>height-4 && theDude.map.getOffsetY() < height-3) {
+                    //theDude.map.advanceY();
                 }
 
                 if (dropped > 0) {

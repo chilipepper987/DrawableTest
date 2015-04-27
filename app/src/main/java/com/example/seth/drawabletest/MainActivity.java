@@ -99,6 +99,8 @@ public class MainActivity extends ActionBarActivity {
             //walk thru a wall
 
             if (theDude.animating == false) {
+                // vertical orientation should start at 0
+                theDude.verticalOrientation=0;
                 //we always "turn" the sprite, regardless of whether or not it moved
                 //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
                 //so store the orientation before turning, so we can know if it changed
@@ -120,6 +122,8 @@ public class MainActivity extends ActionBarActivity {
             //do nothing if we are currently in the middle of an animation...otherwise we might be able to
             //walk thru a wall
             if (theDude.animating == false) {
+                // vertical orientation should start at 0
+                theDude.verticalOrientation=0;
                 //we always "turn" the sprite, regardless of whether or not it moved
                 //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
                 //so store the orientation before turning, so we can know if it changed
@@ -141,6 +145,8 @@ public class MainActivity extends ActionBarActivity {
             //do nothing if we are currently in the middle of an animation...otherwise we might be able to
             //walk thru a wall
             if (theDude.animating == false) {
+                // vertical orientation should start at 0
+                theDude.verticalOrientation=0;
                 //don't turn the sprite to move up.
                 //we always move in the direction we are already facing
                 //get the orientation
@@ -159,6 +165,8 @@ public class MainActivity extends ActionBarActivity {
                     //then we can move so
                     theDude.x += direction; //advance x
                     theDude.y--; //move up
+                    //set vertical orientation. we just moved up
+                    theDude.verticalOrientation=1;
                 }
                 reDraw();
             }
