@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
 
         super.onCreate(savedInstanceState);
         Log.d("a", "a");
-        context=this.getApplicationContext();
+        context = this.getApplicationContext();
 
         //Log.i("length", ""+f.length());
 
@@ -72,7 +72,6 @@ public class MainActivity extends ActionBarActivity {
         //set up the game
 
 
-
         //our hero, the block dude!
         theDude = new Dude(new TileMap());
 
@@ -95,104 +94,87 @@ public class MainActivity extends ActionBarActivity {
 
         //A is the left button so
         A.setOnClickListener((v) -> {
-            //we always "turn" the sprite, regardless of whether or not it moved
-            //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
-            //so store the orientation before turning, so we can know if it changed
-            String previousOrientation = theDude.getOrientation();
-            theDude.turnLeft();
+            //concurrency...
+            //do nothing if we are currently in the middle of an animation...otherwise we might be able to
+            //walk thru a wall
 
-            if (theDude.getOrientation() == previousOrientation) {
-                //then we were already facing this way, so get moving!
-                theDude.moveLeft();
-            }
-            reDraw();
-        });
+            if (theDude.animating == false) {
+                //we always "turn" the sprite, regardless of whether or not it moved
+                //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
+                //so store the orientation before turning, so we can know if it changed
+                String previousOrientation = theDude.getOrientation();
+                theDude.turnLeft();
 
-        S.setOnClickListener((v) -> {
-            //try and animate the dude right
-
-
-            //we are animating the dude right
-            theDude.animating = true;
-            theDude.animatingSprite = "right";
-            theDude.x++;
-            //new value animator. we are animating frames 0-6
-            ValueAnimator va = ValueAnimator.ofInt(0, 6);
-            //set duration in millis.
-            va.setDuration(200);
-            //what to do for each frame? increment the frame counter,
-            //and redraw
-            va.addUpdateListener((animation) -> {
-                int frame = (int) animation.getAnimatedValue();
-                theDude.setFrame(frame);
-                reDraw();
-            });
-            //what to do when finished? redraw a final time
-            //cant use a lambda here since there are multiple
-            //methods that could be passed here, so we have
-            //to use an anonymous class to specify it directly
-            va.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    MainActivity.theDude.animating = false;
-                    reDraw();
+                if (theDude.getOrientation() == previousOrientation) {
+                    //then we were already facing this way, so get moving!
+                    theDude.moveLeft();
                 }
-            });
-            //start the animation!
-            va.start();
-
+                reDraw();
+            }
         });
 
         //D is the right button
         D.setOnClickListener((v) -> {
-            //we always "turn" the sprite, regardless of whether or not it moved
-            //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
-            //so store the orientation before turning, so we can know if it changed
-            String previousOrientation = theDude.getOrientation();
-            theDude.turnRight();
 
-            if (theDude.getOrientation() == previousOrientation) {
-                //then we were already facing this way, so get moving!
-                theDude.moveRight();
+            //concurrency...
+            //do nothing if we are currently in the middle of an animation...otherwise we might be able to
+            //walk thru a wall
+            if (theDude.animating == false) {
+                //we always "turn" the sprite, regardless of whether or not it moved
+                //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
+                //so store the orientation before turning, so we can know if it changed
+                String previousOrientation = theDude.getOrientation();
+                theDude.turnRight();
+
+                if (theDude.getOrientation() == previousOrientation) {
+                    //then we were already facing this way, so get moving!
+                    theDude.moveRight();
+                }
+                reDraw();
             }
-            reDraw();
         });
         //                                                      **
         //                                                    ||[]
         //W is the up button. press up to go up a stair, like:[][]
         W.setOnClickListener((v) -> {
-            //don't turn the sprite to move up.
-            //we always move in the direction we are already facing
-            //get the orientation
-            int direction;
-            if (theDude.getOrientation() == "left") {
-                direction = -1;
-            } else {
-                direction = 1;
+            //concurrency...
+            //do nothing if we are currently in the middle of an animation...otherwise we might be able to
+            //walk thru a wall
+            if (theDude.animating == false) {
+                //don't turn the sprite to move up.
+                //we always move in the direction we are already facing
+                //get the orientation
+                int direction;
+                if (theDude.getOrientation() == "left") {
+                    direction = -1;
+                } else {
+                    direction = 1;
+                }
+                //we can only move up if there is a block directly next, and a space directly above it
+                if (
+                    //next to the dude is a block
+                        theDude.map.getMap()[theDude.y][theDude.x + direction].isSolid() &&
+                                //and there is space above the block
+                                theDude.map.getMap()[theDude.y - 1][theDude.x + direction].isSpace()) {
+                    //then we can move so
+                    theDude.x += direction; //advance x
+                    theDude.y--; //move up
+                }
+                reDraw();
             }
-            //we can only move up if there is a block directly next, and a space directly above it
-            if (
-                //next to the dude is a block
-                    theDude.map.getMap()[theDude.y][theDude.x + direction].isSolid() &&
-                            //and there is space above the block
-                            theDude.map.getMap()[theDude.y - 1][theDude.x + direction].isSpace()) {
-                //then we can move so
-                theDude.x += direction; //advance x
-                theDude.y--; //move up
-            }
-            reDraw();
         });
 
         Rock.setOnClickListener((v) -> {
-            if (theDude.holdingRock) {
-                //then we're trying to drop it
-                theDude.dropRock();
-            } else {
-                //then we're trying to pick one up
-                theDude.pickUpRock();
+            if (theDude.animating == false) {
+                if (theDude.holdingRock) {
+                    //then we're trying to drop it
+                    theDude.dropRock();
+                } else {
+                    //then we're trying to pick one up
+                    theDude.pickUpRock();
+                }
+                reDraw();
             }
-            reDraw();
         });
 
         retry.setOnClickListener((v) -> {

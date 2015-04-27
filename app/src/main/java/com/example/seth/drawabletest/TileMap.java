@@ -25,7 +25,7 @@ public class TileMap {
 
         //...
 
-        Level level=HelperLib.readLevelFromFile(1);
+        Level level=HelperLib.readLevelFromFile(2);
         this.map=level.getMap();
         this.startX=level.getStartX();
         this.startY=level.getStartY();

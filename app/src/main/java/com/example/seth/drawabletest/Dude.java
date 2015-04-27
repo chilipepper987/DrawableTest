@@ -268,7 +268,7 @@ public class Dude {
                 int height = theDude.map.getMap().length;
                 //first, do we need to advance left or right
                 //if we have just advanced, and the edge of the map is not showing, then we need to shift
-                if (theDude.x > 12 && theDude.x < width - 8 || theDude.x<=12 && theDude.map.getOffsetX() > 0 || theDude.x>=width-8 && theDude.map.getOffsetX() < width-8) {
+                if (theDude.x > 12 && theDude.x < width - 8 || theDude.x<=12 && theDude.map.getOffsetX() > 0 || theDude.x>=width-8 && theDude.map.getOffsetX() < width-7) {
                     theDude.map.advanceX();
                 }
 
