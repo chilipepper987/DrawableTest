@@ -2,6 +2,8 @@ package com.example.seth.drawabletest;
 
 import android.util.Log;
 
+import java.util.Arrays;
+
 /**
  * Created by Seth on 4/15/2015.
  */
@@ -20,30 +22,19 @@ public class TileMap {
 
 
     public TileMap() {
-        int[][] map =
 
-                {
-                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,1,0,1},
-                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,1,0,1},
-                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,1,0,1},
-                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,1,0,1},
-                        {1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,1,0,1},
-                        {1, 0, 0, 0, 1, 0, 2, 2, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1,1,0,1},
-                        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1,1}};
-        //convert each thing to a tile
-        this.map=new Tile[map.length][map[0].length];
-        for (int i=0;i<map.length;i++) {
-            for (int j=0;j<map[0].length;j++) {
-                this.map[i][j]=new Tile(map[i][j]);
-            }
-        }
-        startX = 1;
-        startY = 5;
+        //...
+
+        Level level=HelperLib.readLevelFromFile(1);
+        this.map=level.getMap();
+        this.startX=level.getStartX();
+        this.startY=level.getStartY();
+
         int[] rock = {0, 0};
         this.rock = rock;
     }
 
-public boolean setDude(Dude dude) {
+    public boolean setDude(Dude dude) {
         if (this.dude == null) {
             this.dude = dude;
             return true;
@@ -215,4 +206,6 @@ public boolean setDude(Dude dude) {
     }
 
 }
+
+
 

@@ -15,6 +15,10 @@ public class Tile {
         this.value=value;
     }
 
+    public Tile(String value) {
+        this.value=Integer.parseInt(value);
+    }
+
     @Override
     public String toString() {
         return String.valueOf(this.value);

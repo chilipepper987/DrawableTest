@@ -1,5 +1,8 @@
 package com.example.seth.drawabletest;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.widget.TextView;
 
 import java.util.MissingFormatArgumentException;
@@ -16,10 +19,11 @@ public class Dude {
     public TileMap map;
     public boolean holdingRock = false;
 
-    public boolean animating=false;
-    public String animatingSprite="";
+    public boolean animating = false;
+    public boolean animatingBlock = false;
+    public String animatingSprite = "";
 
-    private int frame=0;
+    private int frame = 0;
 
     public Dude(TileMap t) {
         //the dude needs to be constructed with a map
@@ -80,18 +84,20 @@ public class Dude {
      */
 
     public int setFrame(int frame) {
-        this.frame=frame;
+        this.frame = frame;
         return frame;
     }
 
     public int getFrame() {
         return this.frame;
     }
+
+
     private boolean _moveX() {
         int direction = this.orientation;
-        boolean mayBeAbleToMove, moved,dudeWillHitWall,rockWillHitWall;
+        boolean mayBeAbleToMove, moved, dudeWillHitWall, rockWillHitWall;
         moved = false;
-        String statusText="";
+        String statusText = "";
 
         if (direction == 1) {
             mayBeAbleToMove = this.x < this.map.getMap()[0].length;
@@ -100,58 +106,41 @@ public class Dude {
         }
         if (mayBeAbleToMove) {
             //then he might be able to move. is he about to hit a wall?
-            dudeWillHitWall=this.map.getMap()[this.y][this.x + direction].isSolid();
+            dudeWillHitWall = this.map.getMap()[this.y][this.x + direction].isSolid();
             //if he is holding a block, is the block about to hit a wall?
             if (this.holdingRock) {
-                rockWillHitWall=this.map.getMap()[this.y-1][this.x+direction].isSolid();
-            }
-            else {
-                rockWillHitWall=false;
+                rockWillHitWall = this.map.getMap()[this.y - 1][this.x + direction].isSolid();
+            } else {
+                rockWillHitWall = false;
             }
 
             if (dudeWillHitWall || rockWillHitWall) {
                 //then there is a wall directly to the left or right of him
                 // (and / or the block)
                 // so don't move
-                statusText="That's a wall.";
+                statusText = "That's a wall.";
             } else {
                 //otherwise, we are safe
-                this.x += direction;
                 if (this.holdingRock) {
                     //advance the rock
                     //remove it for now, then replace it once the dude has landed
-                    this.map.removeRock(this.y-1,this.x);
+                    this.map.removeRock(this.y - 1, this.x);
                 }
                 moved = true;
             }
         } else {
-            statusText="That's a wall.";
+            statusText = "That's a wall.";
         }
         if (moved) {
-            //do we need to fall?
-            int dropped = this.checkGround();
-            //now we have fallen, so put the rock back on top of the dude
-            //this.map.placeRock(this.x,this.y-1);
-            //finally, advance the map
-            if (dropped > 0) {
-                statusText="Watch your step!";
-            }
-            int width = this.map.getMap()[0].length;
-            int height = this.map.getMap().length;
-            //first, do we need to advance left or right
-            //if we have just advanced, and the edge of the map is not showing, then we need to shift
-            if (this.x > 12 && this.x < width-8) {
-                map.advanceX();
-            }
 
-            if (dropped > 0) {
-                //then we have dropped. advance the map
-                //..
-            }
+            //hmmm, async animate
+            _animateX();
+
+            //execution continues in the animation callback
 
 
         }
-        MainActivity.statusText=statusText;
+        MainActivity.statusText = statusText;
         return moved;
     }
 
@@ -164,7 +153,7 @@ public class Dude {
      */
     public int checkGround() {
         int dropped = 0;
-        while (this.y<this.map.getMap().length-1 && this.map.getMap()[this.y + 1][this.x].isSpace()) {
+        while (this.y < this.map.getMap().length - 1 && this.map.getMap()[this.y + 1][this.x].isSpace()) {
             //drop down one
             this.y++;
             dropped++;
@@ -186,27 +175,26 @@ public class Dude {
         boolean rockClear = this.map.getMap()[this.y - 1][this.x + this.orientation].isSpace();
         // # The space above the dude must be clear
         boolean dudeClear = this.map.getMap()[this.y - 1][this.x].isSpace();
-        String statusText="";
+        String statusText = "";
         if (rockAvailable && rockClear && dudeClear) {
             // then we can pick up a rock!
             if (map.removeRock(this.y, this.x + this.orientation)) {
                 //map.placeRock(this.y - 1, this.x);
                 //rock placement should happen on redraw, not here
-                this.holdingRock=true;
-                MainActivity.statusText="";
+                this.holdingRock = true;
+                MainActivity.statusText = "";
                 return true;
             } else {
                 //???
             }
         } else {
             if (!rockAvailable) {
-                statusText="No rock to pick up.";
-            }
-            else {
-                statusText="Can't pick up that rock.";
+                statusText = "No rock to pick up.";
+            } else {
+                statusText = "Can't pick up that rock.";
             }
         }
-        MainActivity.statusText=statusText;
+        MainActivity.statusText = statusText;
         return false;
     }
 
@@ -227,13 +215,75 @@ public class Dude {
 
         if (spaceAvailable && spaceClear) {
             // then we can drop a rock!
-            map.placeRock(this.y, this.x+this.orientation);
-            this.holdingRock=false;
-            MainActivity.statusText="";
+            map.placeRock(this.y, this.x + this.orientation);
+            this.holdingRock = false;
+            MainActivity.statusText = "";
             return true;
         }
-        MainActivity.statusText="Can't drop rock there.";
+        MainActivity.statusText = "Can't drop rock there.";
         return false;
+    }
+
+    private void _animateX() {
+        //we are animating the dude
+        this.animating = true;
+        if (this.holdingRock) {
+            //then we are also animating the block
+            this.animatingBlock = true;
+        }
+        //new value animator. we are animating frames 0-6
+        ValueAnimator va = ValueAnimator.ofInt(0, 6);
+        //set duration in millis.
+        va.setDuration(200);
+        //what to do for each frame? increment the frame counter,
+        //and redraw
+        va.addUpdateListener((animation) -> {
+            int frame = (int) animation.getAnimatedValue();
+            this.setFrame(frame);
+            MainActivity.reDraw();
+        });
+        //what to do when finished? redraw a final time
+        //cant use a lambda here since there are multiple
+        //methods that could be passed here, so we have
+        //to use an anonymous class to specify it directly
+        va.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                //we are done animating
+                Dude theDude=MainActivity.theDude;
+                theDude.animating = false;
+                //advance the dudes x/y in the direction we just walked
+                theDude.x += theDude.orientation;
+
+                //do we need to fall?
+                int dropped = theDude.checkGround();
+                //now we have fallen, so put the rock back on top of the dude
+                //this.map.placeRock(this.x,this.y-1);
+                //finally, advance the map
+                if (dropped > 0) {
+                    MainActivity.statusText = "Watch your step!";
+                }
+                int width = theDude.map.getMap()[0].length;
+                int height = theDude.map.getMap().length;
+                //first, do we need to advance left or right
+                //if we have just advanced, and the edge of the map is not showing, then we need to shift
+                if (theDude.x > 12 && theDude.x < width - 8 || theDude.x<=12 && theDude.map.getOffsetX() > 0 || theDude.x>=width-8 && theDude.map.getOffsetX() < width-8) {
+                    theDude.map.advanceX();
+                }
+
+                if (dropped > 0) {
+                    //then we have dropped. advance the map
+                    //..
+                }
+
+
+                //finally redraw
+                MainActivity.reDraw();
+            }
+        });
+        //start the animation!
+        va.start();
     }
 
 }

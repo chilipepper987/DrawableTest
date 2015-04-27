@@ -5,17 +5,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.MediaActionSound;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MyView extends View {
-    private Bitmap b, block, goal, dudeLeft, dudeRight, wall;
-    private Bitmap[] right;
-    private Bitmap[] left;
+    private Bitmap b, block, goal, dudeLeft, dudeRight, wall, brick;
+    private Bitmap[] right, left, rockRight, rockLeft;
     private boolean drawingGuy = false;
     public float lastX = -1;
     public float lastY = -1;
@@ -36,10 +39,12 @@ public class MyView extends View {
 
     private void _init() {
         this.block = BitmapFactory.decodeResource(getResources(), R.mipmap.block);
-        this.goal = BitmapFactory.decodeResource(getResources(), R.mipmap.goal);
+        this.goal = BitmapFactory.decodeResource(getResources(), R.mipmap.flag);
         this.dudeLeft = BitmapFactory.decodeResource(getResources(), R.mipmap.barnheadleft);
         this.dudeRight = BitmapFactory.decodeResource(getResources(), R.mipmap.barnheadright);
         this.wall = BitmapFactory.decodeResource(getResources(), R.mipmap.wall);
+        this.brick = BitmapFactory.decodeResource(getResources(), R.mipmap.brix);
+
 
         Bitmap left[] = {
                 BitmapFactory.decodeResource(getResources(), R.mipmap.barnheadleft_left_0),
@@ -63,6 +68,29 @@ public class MyView extends View {
 
         this.left = left;
         this.right = right;
+
+        Bitmap rockLeft[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_6)
+        };
+
+        //left has the animation specified from left to right.
+        //since the block looks the same on either side, for now we can just reverse the left and call it right.
+        //if we want to change the animation later, we can, and the code referencing rockRight will not have to be adjusted.
+        //ArrayUtils lets us reverse easily.
+        Bitmap rockRight[];
+        rockRight = rockLeft.clone();
+        ArrayUtils.reverse(rockRight);
+
+        this.rockLeft = rockLeft;
+        this.rockRight = rockRight;
+
+
     }
 
     public void drawingDude() {
@@ -73,15 +101,11 @@ public class MyView extends View {
         drawingGuy = false;
     }
 
-    //THIS is why all 3 constructors need to be provided: so this can be used
-    //DIRECTLY in the xml! via <view class="com.example.seth.drawabletest.MyView" //...
-
     @Override
     protected void onDraw(Canvas canvas) {
         {
 
 
-            // TODO Auto-generated method stub
             super.onDraw(canvas);
             //setup
             _initDraw(canvas);
@@ -112,18 +136,30 @@ public class MyView extends View {
             wall = HelperLib.getResizedBitmap(wall, Dude.xScale, Dude.yScale);
             dudeLeft = HelperLib.getResizedBitmap(dudeLeft, Dude.xScale, Dude.yScale);
             dudeRight = HelperLib.getResizedBitmap(dudeRight, Dude.xScale, Dude.yScale);
+            brick = HelperLib.getResizedBitmap(brick, Dude.xScale, Dude.yScale);
 
             //resize the bitmap for each each frame in the animation arrays
-            for (int i=0;i<left.length;i++) {
+            //these are all the same size, and so could probably all be done in the same loop,
+            //but we might not know that ahead of time??..
+            for (int i = 0; i < left.length; i++) {
                 //is 2x wide
-                left[i]=HelperLib.getResizedBitmap(left[i],Dude.xScale*2,Dude.yScale);
+                left[i] = HelperLib.getResizedBitmap(left[i], Dude.xScale * 2, Dude.yScale);
             }
 
-            for (int i=0;i<right.length;i++) {
+            for (int i = 0; i < right.length; i++) {
                 //is 2x wide
-                right[i]=HelperLib.getResizedBitmap(right[i],Dude.xScale*2,Dude.yScale);
+                right[i] = HelperLib.getResizedBitmap(right[i], Dude.xScale * 2, Dude.yScale);
             }
 
+            for (int i = 0; i < rockLeft.length; i++) {
+                //is 2x wide
+                rockLeft[i] = HelperLib.getResizedBitmap(rockLeft[i], Dude.xScale * 2, Dude.yScale);
+            }
+
+            for (int i = 0; i < rockRight.length; i++) {
+                //is 2x wide
+                rockRight[i] = HelperLib.getResizedBitmap(rockRight[i], Dude.xScale * 2, Dude.yScale);
+            }
 
 
         } else {
@@ -143,15 +179,15 @@ public class MyView extends View {
         mapHeight = map.getMap().length;
         xMin = map.getOffsetX();
         yMin = map.getOffsetY();
-        xMax = xMin + 21 > mapWidth ? mapWidth - xMin : xMin + 21;
-        yMax = yMin + 6 > mapHeight ? mapHeight - yMin : yMin + 6;
+        xMax = xMin + 23 > mapWidth ? mapWidth - xMin : xMin + 23;
+        yMax = yMin + 7 > mapHeight ? mapHeight - yMin : yMin + 7;
         Log.d("start drawing", "now");
         for (int i = xMin; i < xMax; i++) {
 
             for (int j = yMin; j < yMax; j++) {
                 //Log.d("loop", "");
                 int tileNumber = map.getMap()[j][i].getValue();
-                if (tileNumber < 1 || tileNumber > 3) {
+                if (tileNumber < 1) {
                     continue;
                 }
                 Bitmap tile = wall;
@@ -169,8 +205,13 @@ public class MyView extends View {
                         tile = goal;
                         break;
                     }
+                    case 5: {
+                        tile = brick;
+                        break;
+                    }
                     default: {
                         draw = false;
+                        break;
                     }
                 }
                 if (draw) {
@@ -211,20 +252,53 @@ public class MyView extends View {
         int x = MainActivity.theDude.x;
         int y = MainActivity.theDude.y;
 
-        Bitmap[] dudeAnimation;
-        String orientation = MainActivity.theDude.getOrientation();
-        if (orientation == "left") {
+        Bitmap[] dudeAnimation, rockAnimation;
+        int orientation = MainActivity.theDude.orientation;
+        //the offset:
+        //when moving right, no offset is needed, since we can orient the 2-tile-wide animation
+        //block at our current position, and the coordinate specifies the left side, and we move left to right like this:
+        //DUDE
+        //[X--->-->]
+        //however, for the left, we are moving from right to left, but the coordinate still specifies the left side, so we have this:
+        //DUDE
+        //[<---<--X]
+        //which will shoot the guy a tile forward and then pull him back, but what we need is this:
+        //      DUDE
+        //[<---<--X]
+        //so the animation needs to get offset 1 to the left
+        int xOffset;
+
+        if (orientation == -1) {
             dudeAnimation = this.left;
-            x++; //set x to its previous value
-        } else if (orientation == "right") {
+            rockAnimation = this.rockLeft;
+            xOffset=1;
+        } else if (orientation == 1) {
             dudeAnimation = this.right;
-            x--; //set x to its previous value
+            rockAnimation = this.rockRight;
+            xOffset=0;
         } else {
             dudeAnimation = this.left;
-            x++; //set x to its previous value
+            rockAnimation = this.rockLeft;
+            xOffset=1;
         }
 
         int frame = MainActivity.theDude.getFrame();
-        canvas.drawBitmap(dudeAnimation[frame], (x - xMin) * Dude.xScale, (y - yMin) * Dude.yScale, null);
+        canvas.drawBitmap(dudeAnimation[frame], (x - xMin - xOffset) * Dude.xScale, (y - yMin) * Dude.yScale, null);
+        //also draw the block if we're holding it
+        if (MainActivity.theDude.holdingRock) {
+            canvas.drawBitmap(rockAnimation[frame], (x - xMin - xOffset) * Dude.xScale, (y - yMin - 1 /*-1 above the head */) * Dude.yScale, null);
+        }
+    }
+
+    private void _animateDudeUpOrDown(Canvas canvas) {
+
+    }
+
+    private void _animateStepUp(Canvas canvas) {
+
+    }
+
+    private void _animateStepDown(Canvas canvas) {
+
     }
 }

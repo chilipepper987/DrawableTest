@@ -3,6 +3,7 @@ package com.example.seth.drawabletest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
@@ -18,13 +19,17 @@ import java.io.File;
 public class MainActivity extends ActionBarActivity {
 
     public static Dude theDude;
-    public static String statusText="";
+    public static String statusText = "";
+    private static MyView gameArea;
+    private static TextView status;
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         Log.d("a", "a");
+        context=this.getApplicationContext();
 
         //Log.i("length", ""+f.length());
 
@@ -66,9 +71,18 @@ public class MainActivity extends ActionBarActivity {
     private void _init() {
         //set up the game
 
+
+
         //our hero, the block dude!
         theDude = new Dude(new TileMap());
+
         //grab the view from the xml
+        gameArea = (MyView) findViewById(R.id.canvas);
+
+        //and the status box
+        status = (TextView) findViewById(R.id.textStatus);
+        //clear any messages that might be in the status box
+        status.setText("Howdy!");
 
         //assign handlers to the control buttons
         Button W = (Button) findViewById(R.id.buttonW);
@@ -82,29 +96,36 @@ public class MainActivity extends ActionBarActivity {
         //A is the left button so
         A.setOnClickListener((v) -> {
             //we always "turn" the sprite, regardless of whether or not it moved
+            //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
+            //so store the orientation before turning, so we can know if it changed
+            String previousOrientation = theDude.getOrientation();
             theDude.turnLeft();
-            theDude.moveLeft();
-            _reDraw();
+
+            if (theDude.getOrientation() == previousOrientation) {
+                //then we were already facing this way, so get moving!
+                theDude.moveLeft();
+            }
+            reDraw();
         });
 
-        S.setOnClickListener((v)->{
+        S.setOnClickListener((v) -> {
             //try and animate the dude right
 
 
             //we are animating the dude right
-            theDude.animating=true;
-            theDude.animatingSprite="right";
+            theDude.animating = true;
+            theDude.animatingSprite = "right";
             theDude.x++;
             //new value animator. we are animating frames 0-6
-            ValueAnimator va = ValueAnimator.ofInt(0,6);
-            //set duration in millis. 7 frames, 2fps, 3500 millis
-            va.setDuration(500);
+            ValueAnimator va = ValueAnimator.ofInt(0, 6);
+            //set duration in millis.
+            va.setDuration(200);
             //what to do for each frame? increment the frame counter,
             //and redraw
-            va.addUpdateListener((animation)->{
+            va.addUpdateListener((animation) -> {
                 int frame = (int) animation.getAnimatedValue();
                 theDude.setFrame(frame);
-                _reDraw();
+                reDraw();
             });
             //what to do when finished? redraw a final time
             //cant use a lambda here since there are multiple
@@ -114,8 +135,8 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    MainActivity.theDude.animating=false;
-                    _reDraw();
+                    MainActivity.theDude.animating = false;
+                    reDraw();
                 }
             });
             //start the animation!
@@ -126,9 +147,16 @@ public class MainActivity extends ActionBarActivity {
         //D is the right button
         D.setOnClickListener((v) -> {
             //we always "turn" the sprite, regardless of whether or not it moved
+            //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
+            //so store the orientation before turning, so we can know if it changed
+            String previousOrientation = theDude.getOrientation();
             theDude.turnRight();
-            theDude.moveRight();
-            _reDraw();
+
+            if (theDude.getOrientation() == previousOrientation) {
+                //then we were already facing this way, so get moving!
+                theDude.moveRight();
+            }
+            reDraw();
         });
         //                                                      **
         //                                                    ||[]
@@ -153,7 +181,7 @@ public class MainActivity extends ActionBarActivity {
                 theDude.x += direction; //advance x
                 theDude.y--; //move up
             }
-            _reDraw();
+            reDraw();
         });
 
         Rock.setOnClickListener((v) -> {
@@ -164,57 +192,30 @@ public class MainActivity extends ActionBarActivity {
                 //then we're trying to pick one up
                 theDude.pickUpRock();
             }
-            _reDraw();
+            reDraw();
         });
 
         retry.setOnClickListener((v) -> {
-            _reDraw();
+            reDraw();
             _init();
-            _reDraw();
+            reDraw();
         });
 
     }
 
-    private void _reDraw() {
-        MyView gameArea = (MyView) findViewById(R.id.canvas);
+    public static void reDraw() {
 
         gameArea.invalidate();
 
         //and check the game state
-
         //status
-        TextView status = (TextView) findViewById(R.id.textStatus);
         status.setText(statusText);
 
         if (MainActivity.theDude.map.getMap()[theDude.y][theDude.x].isGoal()) {
 
             status.setText("You Win!");
-                    /*
-            SystemClock.sleep(1000);
-            MainActivity.theDude.map.getMap()[theDude.y][theDude.x - 1] = new Tile(1);
-            MainActivity.theDude.map.getMap()[theDude.y][theDude.x - 2] = new Tile(1);
-            MainActivity.theDude.map.getMap()[theDude.y][theDude.x - 3] = new Tile(1);
-            gameArea.invalidate();
-            SystemClock.sleep(5000);
-            _init();*/
-            return;
-        }
-        return;/*
-        gameArea.drawingDude();
-        gameArea.lastX = (float) Math.round(gameArea.lastX);
-        gameArea.lastY = (float) Math.round(gameArea.lastY);
-        float xStep = (theDude.x - gameArea.lastX) / 3;
-        float yStep = (theDude.y - gameArea.lastY) / 3;
-        gameArea.xStep=xStep;
-        gameArea.yStep=yStep;
-
-        for (int i=0;i<1;i++) {
-            gameArea.lastX+=xStep;
-            gameArea.lastY+=yStep;
-            SystemClock.sleep(1000);
-            gameArea.invalidate();
 
         }
-        */
+        return;
     }
 }
