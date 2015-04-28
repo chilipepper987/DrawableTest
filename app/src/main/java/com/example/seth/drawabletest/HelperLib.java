@@ -68,11 +68,9 @@ public class HelperLib {
 
     public static Level readLevelFromFile(int levelNumber) {
         String contents = HelperLib.getStringResource(R.raw.levels);
-        Log.i("contents", contents);
 
         //split on LEVELMARKER
         String[] levels = contents.split("LEVELMARKER");
-        Log.i("levels", Arrays.toString(levels));
 
         //lets get level 1
         //the file starts with the LEVELMARKER delimiter, meaning the first element is going to be empty, so this will
@@ -95,7 +93,6 @@ public class HelperLib {
             }
         }
 
-        Log.i("strMap", Arrays.deepToString(map));
 
 //        int[][] map =
 //

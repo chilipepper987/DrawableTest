@@ -163,9 +163,6 @@ public class MyView extends View {
 
 
         } else {
-            Log.d("xScale", "" + Dude.xScale);
-            Log.d("yScale", "" + Dude.yScale);
-            Log.d("blockHeight", "" + block.getScaledHeight(canvas));
         }
 
         //end init stuff
@@ -181,7 +178,7 @@ public class MyView extends View {
         yMin = map.getOffsetY();
         xMax = xMin + 23 > mapWidth ? mapWidth - xMin : xMin + 23;
         yMax = yMin + 7 > mapHeight ? mapHeight - yMin : yMin + 7;
-        Log.d("start drawing", "now");
+        //Log.d("start drawing", "now");
         for (int i = xMin; i < xMax; i++) {
 
             for (int j = yMin; j < yMax; j++) {
@@ -219,7 +216,7 @@ public class MyView extends View {
                 }
             }
         }
-        Log.d("stop", "drawing");
+        //Log.d("stop", "drawing");
     }
 
     private void _drawDude(Canvas canvas) {

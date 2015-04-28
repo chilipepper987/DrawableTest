@@ -28,10 +28,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        Log.d("a", "a");
         context = this.getApplicationContext();
 
-        //Log.i("length", ""+f.length());
 
         //setContentView(new MyView(this));
         setContentView(R.layout.activity_main);/*

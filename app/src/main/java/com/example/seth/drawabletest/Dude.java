@@ -3,6 +3,7 @@ package com.example.seth.drawabletest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.MissingFormatArgumentException;
@@ -276,6 +277,12 @@ public class Dude {
                 if (theDude.y > 3 && theDude.y < height || theDude.y<=4 && theDude.map.getOffsetY() > 0 || theDude.y>height-4 && theDude.map.getOffsetY() < height-3) {
                     //theDude.map.advanceY();
                 }
+                Log.d("theDude.x",""+theDude.x);
+                Log.d("theDude.y",""+theDude.y);
+                Log.d("map X offset",""+map.getOffsetX());
+                Log.d("map Y offset", ""+map.getOffsetY());
+                Log.d("width",""+width);
+                Log.d("height",""+height);
 
                 if (dropped > 0) {
                     //then we have dropped. advance the map
