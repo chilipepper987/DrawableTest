@@ -108,6 +108,7 @@ public class HelperLib {
 
         //convert each thing to a tile
         Tile[][] levelMap = new Tile[map.length][map[0].length];
+
         int startX=0,startY=0;
         for (int i = 0; i < map.length; i++) {
             //there might be null garbage in here
@@ -117,6 +118,8 @@ public class HelperLib {
             }
             for (int j = 0; j < map[0].length; j++) {
                 levelMap[i][j] = new Tile(map[i][j]);
+                Log.i("gen. i,j",i+","+j);
+                Log.i("val",map[i][j]);
                 if (levelMap[i][j].getValue() < 0) {
                     //the dude sits at the -1 tile
                     startX = j;
@@ -128,6 +131,7 @@ public class HelperLib {
         }
         //pack it up
         Level retVal=new Level(levelMap,startX,startY);
+        retVal.strMap=map;
         return retVal;
     }
 }

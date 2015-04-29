@@ -13,6 +13,7 @@ public class TileMap {
     private int startY;
     private int offsetX = 0;
     private int offsetY = 1;
+    public String strMap[][];
 
 
     private Dude dude = null;
@@ -29,6 +30,7 @@ public class TileMap {
         this.map=level.getMap();
         this.startX=level.getStartX();
         this.startY=level.getStartY();
+        this.strMap= level.strMap;
 
         int[] rock = {0, 0};
         this.rock = rock;
@@ -92,7 +94,7 @@ public class TileMap {
      *
      * @return Boolean success
      */
-    public boolean advanceUp() {
+    public boolean advanceDown() {
         if (offsetY > 0) {
             --offsetY;
             return true;
@@ -106,8 +108,8 @@ public class TileMap {
      *
      * @return Boolean success
      */
-    public boolean advanceDown() {
-        if (offsetX < this.map.length - 7) {
+    public boolean advanceUp() {
+        if (offsetY < this.map.length - 6) {
             ++offsetY;
             return true;
         } else {
@@ -147,9 +149,11 @@ public class TileMap {
     public int advanceY() {
         int moved = 0;
         int direction = this.dude.verticalOrientation;
+        Log.d("direction",""+direction);
+        Log.d("offset y before",""+offsetY);
         if (direction == -1) {
             //we just moved down. can we see the bottom?
-
+            Log.d("moving down?",""+getOffsetY());
             if (getOffsetY() > 0) {
                 //the bottom is off screen. shift.
                 advanceUp();
@@ -157,6 +161,7 @@ public class TileMap {
             }
         } else {
             //we just moved up. can we see the top?
+            Log.d("moving up?",""+getOffsetY()+"|"+map.length);
 
             if (getOffsetY()+4 <= map.length) {
 
@@ -164,6 +169,7 @@ public class TileMap {
                 moved = -1;
             }
         }
+        Log.d("offset y AFTER",""+offsetY);
         return moved;
     }
 

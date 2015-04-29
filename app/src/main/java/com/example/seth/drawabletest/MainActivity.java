@@ -1,20 +1,12 @@
 package com.example.seth.drawabletest;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.os.SystemClock;
-import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.io.File;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -98,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
 
             if (theDude.animating == false) {
                 // vertical orientation should start at 0
-                theDude.verticalOrientation=0;
+                theDude.verticalOrientation = 0;
                 //we always "turn" the sprite, regardless of whether or not it moved
                 //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
                 //so store the orientation before turning, so we can know if it changed
@@ -121,7 +113,7 @@ public class MainActivity extends ActionBarActivity {
             //walk thru a wall
             if (theDude.animating == false) {
                 // vertical orientation should start at 0
-                theDude.verticalOrientation=0;
+                theDude.verticalOrientation = 0;
                 //we always "turn" the sprite, regardless of whether or not it moved
                 //we can turn without moving, so if the turn results in an orientation change, don't advance the dude
                 //so store the orientation before turning, so we can know if it changed
@@ -143,29 +135,7 @@ public class MainActivity extends ActionBarActivity {
             //do nothing if we are currently in the middle of an animation...otherwise we might be able to
             //walk thru a wall
             if (theDude.animating == false) {
-                // vertical orientation should start at 0
-                theDude.verticalOrientation=0;
-                //don't turn the sprite to move up.
-                //we always move in the direction we are already facing
-                //get the orientation
-                int direction;
-                if (theDude.getOrientation() == "left") {
-                    direction = -1;
-                } else {
-                    direction = 1;
-                }
-                //we can only move up if there is a block directly next, and a space directly above it
-                if (
-                    //next to the dude is a block
-                        theDude.map.getMap()[theDude.y][theDude.x + direction].isSolid() &&
-                                //and there is space above the block
-                                theDude.map.getMap()[theDude.y - 1][theDude.x + direction].isSpace()) {
-                    //then we can move so
-                    theDude.x += direction; //advance x
-                    theDude.y--; //move up
-                    //set vertical orientation. we just moved up
-                    theDude.verticalOrientation=1;
-                }
+                theDude.moveUp();
                 reDraw();
             }
         });

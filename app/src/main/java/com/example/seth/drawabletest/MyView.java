@@ -18,7 +18,8 @@ import java.util.HashMap;
 
 public class MyView extends View {
     private Bitmap b, block, goal, dudeLeft, dudeRight, wall, brick;
-    private Bitmap[] right, left, rockRight, rockLeft;
+    private Bitmap[] right, left, rockRight, rockLeft, walkLeft, walkRight, jumpLeft, jumpRight, blockJumpLeft, blockJumpRight;
+    ;
     private boolean drawingGuy = false;
     public float lastX = -1;
     public float lastY = -1;
@@ -38,10 +39,10 @@ public class MyView extends View {
     }
 
     private void _init() {
-        this.block = BitmapFactory.decodeResource(getResources(), R.mipmap.block);
+        this.block = BitmapFactory.decodeResource(getResources(), R.mipmap.blok);
         this.goal = BitmapFactory.decodeResource(getResources(), R.mipmap.flag);
-        this.dudeLeft = BitmapFactory.decodeResource(getResources(), R.mipmap.barnheadleft);
-        this.dudeRight = BitmapFactory.decodeResource(getResources(), R.mipmap.barnheadright);
+        this.dudeLeft = BitmapFactory.decodeResource(getResources(), R.mipmap.dude_left);
+        this.dudeRight = BitmapFactory.decodeResource(getResources(), R.mipmap.dude_right);
         this.wall = BitmapFactory.decodeResource(getResources(), R.mipmap.wall);
         this.brick = BitmapFactory.decodeResource(getResources(), R.mipmap.brix);
 
@@ -66,19 +67,126 @@ public class MyView extends View {
                 BitmapFactory.decodeResource(getResources(), R.mipmap.barnheadright_right_6)
         };
 
+        Bitmap walkLeft[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_left_8)
+        };
+
+        Bitmap walkRight[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.walk_right_8)
+        };
+
+        Bitmap jumpRight[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_8),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_9),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_10),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_11),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_12),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_13),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_14)
+        };
+
+        Bitmap jumpLeft[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_8),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_9),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_10),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_11),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_12),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_13),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_14)
+        };
+
+        Bitmap blockJumpRight[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_8),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_9),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_10),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_11),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_12),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_13),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_14)
+        };
+
+        Bitmap blockJumpLeft[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_8),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_9),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_10),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_11),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_12),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_13),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_14)
+        };
+
+
+        this.walkLeft = walkLeft;
+        this.walkRight = walkRight;
+        this.jumpLeft = jumpLeft;
+        this.jumpRight = jumpRight;
+        this.blockJumpLeft = blockJumpLeft;
+        this.blockJumpRight = blockJumpRight;
+
         this.left = left;
         this.right = right;
 
         Bitmap rockLeft[] = {
-                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_0),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_1),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_2),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_3),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_4),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_5),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.blockleft_left_6)
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_left_8)
         };
 
+        /*
         //left has the animation specified from left to right.
         //since the block looks the same on either side, for now we can just reverse the left and call it right.
         //if we want to change the animation later, we can, and the code referencing rockRight will not have to be adjusted.
@@ -86,6 +194,19 @@ public class MyView extends View {
         Bitmap rockRight[];
         rockRight = rockLeft.clone();
         ArrayUtils.reverse(rockRight);
+        */
+
+        Bitmap rockRight[] = {
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_0),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_1),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_2),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_3),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_4),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_5),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_6),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_7),
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_right_8)
+        };
 
         this.rockLeft = rockLeft;
         this.rockRight = rockRight;
@@ -117,7 +238,11 @@ public class MyView extends View {
                 //draw the dude
                 _drawDude(canvas);
             } else {
-                _animateDudeLeftOrRight(canvas);
+                if (MainActivity.theDude.verticalOrientation == 0) {
+                    _animateDudeLeftOrRight(canvas);
+                } else {
+                    _animateStepUp(canvas);
+                }
             }
         }
     }
@@ -161,6 +286,36 @@ public class MyView extends View {
                 rockRight[i] = HelperLib.getResizedBitmap(rockRight[i], Dude.xScale * 2, Dude.yScale);
             }
 
+            for (int i = 0; i < walkLeft.length; i++) {
+                //is 2x wide
+                walkLeft[i] = HelperLib.getResizedBitmap(walkLeft[i], Dude.xScale * 2, Dude.yScale);
+            }
+
+            for (int i = 0; i < walkRight.length; i++) {
+                //is 2x wide
+                walkRight[i] = HelperLib.getResizedBitmap(walkRight[i], Dude.xScale * 2, Dude.yScale);
+            }
+
+            for (int i = 0; i < jumpLeft.length; i++) {
+                //is 2x wide, 2x tall
+                jumpLeft[i] = HelperLib.getResizedBitmap(jumpLeft[i], Dude.xScale * 2, Dude.yScale*2);
+            }
+
+            for (int i = 0; i < jumpRight.length; i++) {
+                //is 2x wide, 2x tall
+                jumpRight[i] = HelperLib.getResizedBitmap(jumpRight[i], Dude.xScale * 2, Dude.yScale*2);
+            }
+
+            for (int i = 0; i < blockJumpLeft.length; i++) {
+                //is 2x wide, 2x tall
+                blockJumpLeft[i] = HelperLib.getResizedBitmap(blockJumpLeft[i], Dude.xScale * 2, Dude.yScale*2);
+            }
+
+            for (int i = 0; i < blockJumpRight.length; i++) {
+                //is 2x wide, 2x tall
+                blockJumpRight[i] = HelperLib.getResizedBitmap(blockJumpRight[i], Dude.xScale * 2, Dude.yScale*2);
+            }
+
 
         } else {
         }
@@ -176,14 +331,23 @@ public class MyView extends View {
         mapHeight = map.getMap().length;
         xMin = map.getOffsetX();
         yMin = map.getOffsetY();
-        xMax = xMin + 23 > mapWidth ? mapWidth - xMin : xMin + 23;
-        yMax = yMin + 7 > mapHeight ? mapHeight - yMin : yMin + 7;
+        xMax = xMin + 23 >= mapWidth ? mapWidth-1 : xMin + 23;
+        yMax = yMin + 7 >= mapHeight ? mapHeight-1 : yMin + 7;
         //Log.d("start drawing", "now");
         for (int i = xMin; i < xMax; i++) {
 
             for (int j = yMin; j < yMax; j++) {
                 //Log.d("loop", "");
-                int tileNumber = map.getMap()[j][i].getValue();
+                int tileNumber=0;
+                try {
+                    tileNumber = map.getMap()[j][i].getValue();
+                }
+                catch(Exception ex) {
+                    Log.e("what happened?",j+","+i);
+                    //Log.e("strMap",Arrays.deepToString(map.strMap));
+                    Log.e("yMax",""+yMax);
+                }
+
                 if (tileNumber < 1) {
                     continue;
                 }
@@ -266,20 +430,21 @@ public class MyView extends View {
         int xOffset;
 
         if (orientation == -1) {
-            dudeAnimation = this.left;
+            dudeAnimation = this.walkLeft;
             rockAnimation = this.rockLeft;
-            xOffset=1;
+            xOffset = 1;
         } else if (orientation == 1) {
-            dudeAnimation = this.right;
+            dudeAnimation = this.walkRight;
             rockAnimation = this.rockRight;
-            xOffset=0;
+            xOffset = 0;
         } else {
-            dudeAnimation = this.left;
+            dudeAnimation = this.walkLeft;
             rockAnimation = this.rockLeft;
-            xOffset=1;
+            xOffset = 1;
         }
 
         int frame = MainActivity.theDude.getFrame();
+        frame = (frame > dudeAnimation.length - 1) ? dudeAnimation.length - 1 : frame;
         canvas.drawBitmap(dudeAnimation[frame], (x - xMin - xOffset) * Dude.xScale, (y - yMin) * Dude.yScale, null);
         //also draw the block if we're holding it
         if (MainActivity.theDude.holdingRock) {
@@ -292,7 +457,36 @@ public class MyView extends View {
     }
 
     private void _animateStepUp(Canvas canvas) {
+        int x = MainActivity.theDude.x;
+        int y = MainActivity.theDude.y;
 
+        Bitmap[] dudeAnimation, rockAnimation;
+        int orientation = MainActivity.theDude.orientation;
+
+        int xOffset;
+
+        if (orientation == -1) {
+            dudeAnimation = this.jumpLeft;
+            rockAnimation = this.blockJumpLeft;
+            xOffset = 1;
+        } else if (orientation == 1) {
+            dudeAnimation = this.jumpRight;
+            rockAnimation = this.blockJumpRight;
+            xOffset = 0;
+        } else {
+            dudeAnimation = this.jumpLeft;
+            rockAnimation = this.blockJumpLeft;
+            xOffset = 1;
+        }
+
+        int frame = MainActivity.theDude.getFrame();
+        frame = (frame > dudeAnimation.length - 1) ? dudeAnimation.length - 1 : frame;
+        //                                                                           so.. the -1 i needed here because the coordinate is the top left, not bottom left I guess?
+        canvas.drawBitmap(dudeAnimation[frame], (x - xMin - xOffset) * Dude.xScale, (y - yMin - 1) * Dude.yScale, null);
+        //also draw the block if we're holding it
+        if (MainActivity.theDude.holdingRock) {
+            canvas.drawBitmap(rockAnimation[frame], (x - xMin - xOffset) * Dude.xScale, (y - yMin - 2 /*-1 above the head */) * Dude.yScale, null);
+        }
     }
 
     private void _animateStepDown(Canvas canvas) {

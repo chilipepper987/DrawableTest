@@ -18,12 +18,15 @@ public class Dude {
     public static int yScale = 0;
     public int orientation = 1;
     public int verticalOrientation;
+    public boolean wentUp = false;
     public TileMap map;
     public boolean holdingRock = false;
 
     public boolean animating = false;
     public boolean animatingBlock = false;
     public String animatingSprite = "";
+
+    private static AnimatorListenerAdapter animationListener;
 
     private int frame = 0;
 
@@ -57,6 +60,84 @@ public class Dude {
         //now place the dude in the starting position
         this.x = map.getStartX();
         this.y = map.getStartY();
+
+        _initAnimatorListenerAdaptor();
+    }
+
+    private void _initAnimatorListenerAdaptor() {
+        animationListener = new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                //we are done animating
+                Dude theDude = MainActivity.theDude;
+                theDude.animating = false;
+                //advance the dudes x/y in the direction we just walked
+                theDude.x += theDude.orientation;
+                if (theDude.verticalOrientation != 0) {
+                    theDude.y -= verticalOrientation; //move up //-- is up, + is down, but orientation is positive if up, negative if down...
+                    //reset vertical orientation
+                    //set vertical orientation. we just moved up
+
+                }
+
+
+                //do we need to fall?
+                int dropped = theDude.checkGround();
+                //now we have fallen, so put the rock back on top of the dude
+                //this.map.placeRock(this.x,this.y-1);
+                //finally, advance the map
+                if (dropped > 0) {
+                    MainActivity.statusText = "Watch your step!";
+                }
+                int width = theDude.map.getMap()[0].length;
+                int height = theDude.map.getMap().length;
+                //first, do we need to advance left or right
+                //if we have just advanced, and the edge of the map is not showing, then we need to shift
+                //middle of level                              left side, wall not showing yet                        right side, wall not showing yet
+                if (theDude.x > 12 && theDude.x < width - 10 || theDude.x <= 12 && theDude.map.getOffsetX() > 0 /*|| theDude.x >= width - 8 && theDude.map.getOffsetX() < width - 7*/) {
+                    theDude.map.advanceX();
+                }
+                //if we went up or down, scroll accordingly
+                Log.d("went up?", "" + theDude.wentUp + "|");
+                if (dropped > 0 || theDude.verticalOrientation != 0) {
+                    //if (theDude.y > 3 && theDude.y < height || theDude.y <= 4 && theDude.map.getOffsetY() > 4 || theDude.y > height - 6 && theDude.map.getOffsetY() < height - 3) {
+                    //if dropped > 0)  then we need to do this multiple times, one for each level dropped
+                    int iterations = dropped > 0 ? dropped : 1;
+
+                    for (int i = 0; i < iterations; i++) {
+                        //in the middle
+                        //                       on the top, can't see ceiling                         on bottom, can't see floor
+                        Log.i("y,height,offsetY",theDude.y+", "+height+", "+theDude.map.getOffsetY());
+                        if (theDude.y > 3 && theDude.y < height - 7 || theDude.y <= 4 && theDude.map.getOffsetY() > 1 /*|| theDude.y > height - 7 && theDude.map.getOffsetY() < height - 6*/) {
+                            Log.d("advance", "Y");
+                            theDude.map.advanceY();
+                        }
+                        if (theDude.verticalOrientation == 1) {
+                            Log.d("tried to go up.", "");
+                        }
+                    }
+                    //reset vertical orientation
+                    theDude.verticalOrientation = 0;
+                }
+                theDude.wentUp = false;
+
+                Log.d("theDude.x / y", "" + theDude.x + "," + theDude.y);
+                Log.d("map offset", "" + map.getOffsetX() + "," + map.getOffsetY());
+                Log.d("width x height", "" + width + " x " + height);
+                Log.d("", "");
+                if (dropped > 0)
+
+                {
+                    //then we have dropped. advance the map
+                    //..
+                }
+
+
+                //finally redraw
+                MainActivity.reDraw();
+            }
+        };
     }
 
     public String getOrientation() {
@@ -146,6 +227,84 @@ public class Dude {
         return moved;
     }
 
+    public boolean moveUp() {
+        // vertical orientation should start at 0
+        this.verticalOrientation = 0;
+        //don't turn the sprite to move up.
+        //we always move in the direction we are already facing
+        //get the orientation
+        int direction = this.orientation;
+        boolean moved, blockAdjacent, spaceAboveBlock, spaceAboveDude,
+                extraSpaceAboveDude, extraSpaceAboveBlock;
+        String statusText = "";
+        moved = false;
+        //we can only move up if there is a block directly next, and a space directly above it
+
+        if (_mayBeAbleToMove(true)) {
+            //then maybe we can move
+            //since we are doing a "jump", we need there to be a block next to us,
+            //a space above us,
+            //and a space above the block
+            blockAdjacent = this.map.getMap()[this.y][this.x + direction].isSolid();
+            spaceAboveBlock = this.map.getMap()[this.y - 1][this.x + direction].isSpace();
+            spaceAboveDude = this.map.getMap()[this.y - 1][this.x].isSpace();
+            if (this.holdingRock) {
+                //we need extra room if we are holding a block above our head
+                extraSpaceAboveDude = this.map.getMap()[this.y - 2][this.x].isSpace();
+                extraSpaceAboveBlock = this.map.getMap()[this.y - 2][this.x + direction].isSpace();
+            } else {
+                //we don't care if there is extra room
+                extraSpaceAboveBlock = true;
+                extraSpaceAboveDude = true;
+            }
+
+            //if all conditions are met
+            if (blockAdjacent &&
+                    spaceAboveBlock &&
+                    spaceAboveDude &&
+                    extraSpaceAboveBlock &&
+                    extraSpaceAboveDude) {
+                //then we can move so
+                this.verticalOrientation = 1;
+                if (this.holdingRock) {
+                    this.map.removeRock(this.y - 1, this.x);
+                }
+                moved = true;
+            }
+        } else {
+            statusText = "That's a wall.";
+        }
+        if (moved) {
+            //async animate
+            _animateY();
+        }
+        MainActivity.statusText = statusText;
+        return moved;
+    }
+
+    private boolean _mayBeAbleToMove() {
+        boolean mayBeAbleToMove;
+        if (this.orientation == 1) {
+            mayBeAbleToMove = this.x < this.map.getMap()[0].length;
+        } else {
+            mayBeAbleToMove = this.x > 0;
+        }
+        return mayBeAbleToMove;
+    }
+
+    private boolean _mayBeAbleToMove(Boolean up) {
+        if (up == true) {
+            int yMin;
+            if (this.holdingRock) {
+                yMin = 1;
+            } else {
+                yMin = 0;
+            }
+            return _mayBeAbleToMove() && this.y > yMin;
+        } else {
+            return _mayBeAbleToMove();
+        }
+    }
 
     /**
      * After moving left or right, if there is nothing under the dude, he needs to fall to the
@@ -159,7 +318,7 @@ public class Dude {
             //drop down one
             this.y++;
             dropped++;
-            this.verticalOrientation=-1;
+            this.verticalOrientation = -1;
         }
         return dropped;
     }
@@ -235,9 +394,9 @@ public class Dude {
             this.animatingBlock = true;
         }
         //new value animator. we are animating frames 0-6
-        ValueAnimator va = ValueAnimator.ofInt(0, 6);
+        ValueAnimator va = ValueAnimator.ofInt(0, 8);
         //set duration in millis.
-        va.setDuration(100);
+        va.setDuration(500);
         //what to do for each frame? increment the frame counter,
         //and redraw
         va.addUpdateListener((animation) -> {
@@ -249,53 +408,32 @@ public class Dude {
         //cant use a lambda here since there are multiple
         //methods that could be passed here, so we have
         //to use an anonymous class to specify it directly
-        va.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                //we are done animating
-                Dude theDude=MainActivity.theDude;
-                theDude.animating = false;
-                //advance the dudes x/y in the direction we just walked
-                theDude.x += theDude.orientation;
-
-                //do we need to fall?
-                int dropped = theDude.checkGround();
-                //now we have fallen, so put the rock back on top of the dude
-                //this.map.placeRock(this.x,this.y-1);
-                //finally, advance the map
-                if (dropped > 0) {
-                    MainActivity.statusText = "Watch your step!";
-                }
-                int width = theDude.map.getMap()[0].length;
-                int height = theDude.map.getMap().length;
-                //first, do we need to advance left or right
-                //if we have just advanced, and the edge of the map is not showing, then we need to shift
-                if (theDude.x > 12 && theDude.x < width - 8 || theDude.x<=12 && theDude.map.getOffsetX() > 0 || theDude.x>=width-8 && theDude.map.getOffsetX() < width-7) {
-                    theDude.map.advanceX();
-                }
-                if (theDude.y > 3 && theDude.y < height || theDude.y<=4 && theDude.map.getOffsetY() > 0 || theDude.y>height-4 && theDude.map.getOffsetY() < height-3) {
-                    //theDude.map.advanceY();
-                }
-                Log.d("theDude.x",""+theDude.x);
-                Log.d("theDude.y",""+theDude.y);
-                Log.d("map X offset",""+map.getOffsetX());
-                Log.d("map Y offset", ""+map.getOffsetY());
-                Log.d("width",""+width);
-                Log.d("height",""+height);
-
-                if (dropped > 0) {
-                    //then we have dropped. advance the map
-                    //..
-                }
-
-
-                //finally redraw
-                MainActivity.reDraw();
-            }
-        });
+        va.addListener(
+                animationListener
+        );
         //start the animation!
         va.start();
+    }
+
+    private void _animateY() {
+        //we are animating the dude
+        this.animating = true;
+        if (this.holdingRock) {
+            //then we are also animating the block
+            this.animatingBlock = true;
+        }
+
+        //new value animator, the jump is 15 frames
+        ValueAnimator va = ValueAnimator.ofInt(0, 14);
+        va.setDuration(1000);
+        va.addUpdateListener((animation) -> {
+            this.setFrame((int) animation.getAnimatedValue());
+            MainActivity.reDraw();
+        });
+
+        va.addListener(animationListener);
+        va.start();
+
     }
 
 }

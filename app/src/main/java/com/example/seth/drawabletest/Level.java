@@ -7,6 +7,7 @@ public class Level {
     private Tile[][] map;
     private int startX;
     private int startY;
+    public String[][] strMap={{"?"}};
 
     public Level(Tile[][] map,int startX, int startY) {
         this.map=map;
