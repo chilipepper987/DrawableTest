@@ -39,7 +39,7 @@ public class MyView extends View {
     }
 
     private void _init() {
-        this.block = BitmapFactory.decodeResource(getResources(), R.mipmap.blok);
+        this.block = BitmapFactory.decodeResource(getResources(), R.mipmap.blox);
         this.goal = BitmapFactory.decodeResource(getResources(), R.mipmap.flag);
         this.dudeLeft = BitmapFactory.decodeResource(getResources(), R.mipmap.dude_left);
         this.dudeRight = BitmapFactory.decodeResource(getResources(), R.mipmap.dude_right);
@@ -98,15 +98,7 @@ public class MyView extends View {
                 BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_3),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_4),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_5),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_6),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_7),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_8),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_9),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_10),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_11),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_12),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_13),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_14)
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_right_6)
         };
 
         Bitmap jumpLeft[] = {
@@ -116,15 +108,7 @@ public class MyView extends View {
                 BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_3),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_4),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_5),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_6),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_7),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_8),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_9),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_10),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_11),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_12),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_13),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_14)
+                BitmapFactory.decodeResource(getResources(), R.mipmap.jump_left_6)
         };
 
         Bitmap blockJumpRight[] = {
@@ -134,15 +118,8 @@ public class MyView extends View {
                 BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_3),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_4),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_5),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_6),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_7),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_8),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_9),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_10),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_11),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_12),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_13),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_14)
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_right_6)
+
         };
 
         Bitmap blockJumpLeft[] = {
@@ -152,15 +129,7 @@ public class MyView extends View {
                 BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_3),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_4),
                 BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_5),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_6),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_7),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_8),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_9),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_10),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_11),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_12),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_13),
-                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_14)
+                BitmapFactory.decodeResource(getResources(), R.mipmap.block_jump_left_6)
         };
 
 

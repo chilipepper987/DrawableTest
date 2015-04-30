@@ -424,8 +424,8 @@ public class Dude {
         }
 
         //new value animator, the jump is 15 frames
-        ValueAnimator va = ValueAnimator.ofInt(0, 14);
-        va.setDuration(1000);
+        ValueAnimator va = ValueAnimator.ofInt(0, 6);
+        va.setDuration(550);
         va.addUpdateListener((animation) -> {
             this.setFrame((int) animation.getAnimatedValue());
             MainActivity.reDraw();
