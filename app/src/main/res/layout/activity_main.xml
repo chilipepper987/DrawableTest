@@ -13,6 +13,7 @@
     android:weightSum="6">
 
     <!-- the game area -->
+
     <view
         class="com.example.seth.drawabletest.MyView"
         android:layout_width="match_parent"
@@ -98,6 +99,11 @@
                 android:layout_weight="1"
                 />
 
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:layout_column="23" />
 
 
         </TableRow>

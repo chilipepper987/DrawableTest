@@ -5,7 +5,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
@@ -15,6 +19,8 @@ public class MainActivity extends ActionBarActivity {
     private static MyView gameArea;
     private static TextView status;
     public static Context context;
+    public static boolean showTitleScreen = true;
+    public static TileMap titleScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +65,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void _init() {
+        _init(1);
+    }
+    private void _init(int levelNumber) {
         //set up the game
+
+        //title screen
+        //titleScreen = new TileMap(levelNumber, "title");
 
 
         //our hero, the block dude!
-        theDude = new Dude(new TileMap());
+        theDude = new Dude(new TileMap(levelNumber));
 
         //grab the view from the xml
         gameArea = (MyView) findViewById(R.id.canvas);
@@ -79,6 +91,36 @@ public class MainActivity extends ActionBarActivity {
         Button S = (Button) findViewById(R.id.buttonS);
         Button D = (Button) findViewById(R.id.buttonD);
         Button Rock = (Button) findViewById(R.id.buttonRock);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+
+        //sample code, this will be a level-select drop down
+        String[] items = {"Level Select","1", "2", "3"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, items);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                status.setText((String) spinner.getSelectedItem());
+                int level=0;
+                try {
+                    level = Integer.parseInt((String) spinner.getSelectedItem());
+                } catch(Exception ex) {
+                    //who cares, couldn't parse
+                    level=0;
+                }
+                if (level > 0) {
+                    _init(level);
+                    reDraw();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
 
         Button retry = (Button) findViewById(R.id.buttonRetry);
 
@@ -155,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
 
         retry.setOnClickListener((v) -> {
             reDraw();
-            _init();
+            _init(3);
             reDraw();
         });
 

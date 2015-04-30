@@ -23,14 +23,25 @@ public class TileMap {
 
 
     public TileMap() {
+        _init(1, "levels");
+    }
 
+    public TileMap(int levelNum) {
+        _init(levelNum, "levels");
+    }
+
+    public TileMap(int levelNum, String file) {
+        _init(levelNum, file);
+    }
+
+    private void _init(int levelNum, String file) {
         //...
 
-        Level level=HelperLib.readLevelFromFile(1);
-        this.map=level.getMap();
-        this.startX=level.getStartX();
-        this.startY=level.getStartY();
-        this.strMap= level.strMap;
+        Level level = HelperLib.readLevelFromFile(levelNum, file);
+        this.map = level.getMap();
+        this.startX = level.getStartX();
+        this.startY = level.getStartY();
+        this.strMap = level.strMap;
 
         int[] rock = {0, 0};
         this.rock = rock;
@@ -149,11 +160,11 @@ public class TileMap {
     public int advanceY() {
         int moved = 0;
         int direction = this.dude.verticalOrientation;
-        Log.d("direction",""+direction);
-        Log.d("offset y before",""+offsetY);
+        Log.d("direction", "" + direction);
+        Log.d("offset y before", "" + offsetY);
         if (direction == -1) {
             //we just moved down. can we see the bottom?
-            Log.d("moving down?",""+getOffsetY());
+            Log.d("moving down?", "" + getOffsetY());
             if (getOffsetY() > 0) {
                 //the bottom is off screen. shift.
                 advanceUp();
@@ -161,15 +172,15 @@ public class TileMap {
             }
         } else {
             //we just moved up. can we see the top?
-            Log.d("moving up?",""+getOffsetY()+"|"+map.length);
+            Log.d("moving up?", "" + getOffsetY() + "|" + map.length);
 
-            if (getOffsetY()+4 <= map.length) {
+            if (getOffsetY() + 4 <= map.length) {
 
                 advanceDown();
                 moved = -1;
             }
         }
-        Log.d("offset y AFTER",""+offsetY);
+        Log.d("offset y AFTER", "" + offsetY);
         return moved;
     }
 

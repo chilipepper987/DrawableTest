@@ -30,12 +30,16 @@ public class MyView extends View {
 
     public MyView(Context context) {
         super(context);
-        _init();
+        if (!isInEditMode()) {
+            _init();
+        }
     }
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        _init();
+        if (!isInEditMode()) {
+            _init();
+        }
     }
 
     private void _init() {
@@ -193,15 +197,15 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (isInEditMode()) {
+            return ;
+        }
+        //setup
+        _initDraw(canvas);
         {
-
-
-            super.onDraw(canvas);
-            //setup
-            _initDraw(canvas);
-
             //draw the level
-            _drawMap(canvas);
+            _drawMap(canvas, MainActivity.theDude.map);
 
             if (!MainActivity.theDude.animating) {
                 //draw the dude
@@ -267,22 +271,22 @@ public class MyView extends View {
 
             for (int i = 0; i < jumpLeft.length; i++) {
                 //is 2x wide, 2x tall
-                jumpLeft[i] = HelperLib.getResizedBitmap(jumpLeft[i], Dude.xScale * 2, Dude.yScale*2);
+                jumpLeft[i] = HelperLib.getResizedBitmap(jumpLeft[i], Dude.xScale * 2, Dude.yScale * 2);
             }
 
             for (int i = 0; i < jumpRight.length; i++) {
                 //is 2x wide, 2x tall
-                jumpRight[i] = HelperLib.getResizedBitmap(jumpRight[i], Dude.xScale * 2, Dude.yScale*2);
+                jumpRight[i] = HelperLib.getResizedBitmap(jumpRight[i], Dude.xScale * 2, Dude.yScale * 2);
             }
 
             for (int i = 0; i < blockJumpLeft.length; i++) {
                 //is 2x wide, 2x tall
-                blockJumpLeft[i] = HelperLib.getResizedBitmap(blockJumpLeft[i], Dude.xScale * 2, Dude.yScale*2);
+                blockJumpLeft[i] = HelperLib.getResizedBitmap(blockJumpLeft[i], Dude.xScale * 2, Dude.yScale * 2);
             }
 
             for (int i = 0; i < blockJumpRight.length; i++) {
                 //is 2x wide, 2x tall
-                blockJumpRight[i] = HelperLib.getResizedBitmap(blockJumpRight[i], Dude.xScale * 2, Dude.yScale*2);
+                blockJumpRight[i] = HelperLib.getResizedBitmap(blockJumpRight[i], Dude.xScale * 2, Dude.yScale * 2);
             }
 
 
@@ -293,28 +297,26 @@ public class MyView extends View {
         //===========================================
     }
 
-    private void _drawMap(Canvas canvas) {
+    private void _drawMap(Canvas canvas, TileMap map) {
 
-        TileMap map = MainActivity.theDude.map;
         mapWidth = map.getMap()[0].length;
         mapHeight = map.getMap().length;
         xMin = map.getOffsetX();
         yMin = map.getOffsetY();
-        xMax = xMin + 23 >= mapWidth ? mapWidth-1 : xMin + 23;
-        yMax = yMin + 7 >= mapHeight ? mapHeight-1 : yMin + 7;
+        xMax = xMin + 23 >= mapWidth ? mapWidth - 1 : xMin + 23;
+        yMax = yMin + 7 >= mapHeight ? mapHeight - 1 : yMin + 7;
         //Log.d("start drawing", "now");
         for (int i = xMin; i < xMax; i++) {
 
             for (int j = yMin; j < yMax; j++) {
                 //Log.d("loop", "");
-                int tileNumber=0;
+                int tileNumber = 0;
                 try {
                     tileNumber = map.getMap()[j][i].getValue();
-                }
-                catch(Exception ex) {
-                    Log.e("what happened?",j+","+i);
+                } catch (Exception ex) {
+                    Log.e("what happened?", j + "," + i);
                     //Log.e("strMap",Arrays.deepToString(map.strMap));
-                    Log.e("yMax",""+yMax);
+                    Log.e("yMax", "" + yMax);
                 }
 
                 if (tileNumber < 1) {

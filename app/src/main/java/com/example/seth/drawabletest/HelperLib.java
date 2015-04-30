@@ -10,7 +10,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
 /**
  * Created by Seth on 4/17/2015.
@@ -67,7 +66,17 @@ public class HelperLib {
     }
 
     public static Level readLevelFromFile(int levelNumber) {
-        String contents = HelperLib.getStringResource(R.raw.levels);
+        return HelperLib.readLevelFromFile(levelNumber,"levels");
+    }
+
+    public static Level readLevelFromFile(int levelNumber, String filename) {
+        String contents="";
+        if (filename=="levels") {
+            contents = HelperLib.getStringResource(R.raw.levels);
+        }
+        if (filename=="title") {
+            contents= HelperLib.getStringResource(R.raw.titlescreen);
+        }
 
         //split on LEVELMARKER
         String[] levels = contents.split("LEVELMARKER");
