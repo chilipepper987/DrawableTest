@@ -303,8 +303,11 @@ public class MyView extends View {
         mapHeight = map.getMap().length;
         xMin = map.getOffsetX();
         yMin = map.getOffsetY();
-        xMax = xMin + 23 >= mapWidth ? mapWidth - 1 : xMin + 23;
-        yMax = yMin + 7 >= mapHeight ? mapHeight - 1 : yMin + 7;
+        //hmm, there is a bit of a border around the drawable area, some fraction of atile
+        //since the framework is happy to draw stuff off screen, expand the max dimension 1 tile in each direction, so we can
+        //see the fractional tile and better fill out the screen. the border is especially crappy when traveling downward.
+        xMax = xMin + MainActivity.GRID_WIDTH+1 >= mapWidth ? mapWidth : xMin + MainActivity.GRID_WIDTH+1;
+        yMax = yMin + MainActivity.GRID_HEIGHT+1 >= mapHeight ? mapHeight : yMin + MainActivity.GRID_HEIGHT+1;
         //Log.d("start drawing", "now");
         for (int i = xMin; i < xMax; i++) {
 
@@ -314,9 +317,9 @@ public class MyView extends View {
                 try {
                     tileNumber = map.getMap()[j][i].getValue();
                 } catch (Exception ex) {
-                    Log.e("what happened?", j + "," + i);
+              //      Log.e("what happened?", j + "," + i);
                     //Log.e("strMap",Arrays.deepToString(map.strMap));
-                    Log.e("yMax", "" + yMax);
+                  //  Log.e("yMax", "" + yMax);
                 }
 
                 if (tileNumber < 1) {

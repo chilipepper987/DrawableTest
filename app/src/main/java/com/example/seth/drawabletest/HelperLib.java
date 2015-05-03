@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 /**
  * Created by Seth on 4/17/2015.
@@ -66,18 +67,19 @@ public class HelperLib {
     }
 
     public static Level readLevelFromFile(int levelNumber) {
-        return HelperLib.readLevelFromFile(levelNumber,"levels");
+        return HelperLib.readLevelFromFile(levelNumber, "levels");
     }
 
     public static Level readLevelFromFile(int levelNumber, String filename) {
-        String contents="";
-        if (filename=="levels") {
+        String contents = "";
+        if (filename == "levels") {
             contents = HelperLib.getStringResource(R.raw.levels);
         }
+        /*
         if (filename=="title") {
             contents= HelperLib.getStringResource(R.raw.titlescreen);
         }
-
+*/
         //split on LEVELMARKER
         String[] levels = contents.split("LEVELMARKER");
 
@@ -94,6 +96,7 @@ public class HelperLib {
                 //its a junk row, like [], skip it
                 continue;
             } else {
+                //Log.d("row:", rowNumber + "|" + Arrays.deepToString(rowArray));
                 //trim it and add it
                 for (int i = 0; i < rowArray.length; i++) {
                     rowArray[i] = rowArray[i].trim();
@@ -118,29 +121,39 @@ public class HelperLib {
         //convert each thing to a tile
         Tile[][] levelMap = new Tile[map.length][map[0].length];
 
-        int startX=0,startY=0;
+        int startX = 0, startY = 0;
         for (int i = 0; i < map.length; i++) {
             //there might be null garbage in here
             //this also ensures the array is properly rectangular:
             if (map[i] == null || map[i].length != map[0].length) {
+                if (map[i]==null) {
+                    Log.d("bad row",i+" - null!");
+                }
+                else {
+                    Log.d("bad row",i+" - "+map[i].length+" / "+map[0].length);
+                }
                 continue;
             }
             for (int j = 0; j < map[0].length; j++) {
                 levelMap[i][j] = new Tile(map[i][j]);
-                Log.i("gen. i,j",i+","+j);
-                Log.i("val",map[i][j]);
+                if (levelNumber == 4) {
+                    //Log.i("gen. i,j", i + "," + j + ":  " + map[i][j]);
+                }
                 if (levelMap[i][j].getValue() < 0) {
                     //the dude sits at the -1 tile
                     startX = j;
                     startY = i;
+                    Log.d("start y,x=", i + "," + j);
                     //and set it to 0
                     levelMap[i][j] = new Tile(0);
                 }
             }
         }
         //pack it up
-        Level retVal=new Level(levelMap,startX,startY);
-        retVal.strMap=map;
+        String nl=System.getProperty("line.separator");
+        //Log.d("MAP",nl+nl+Arrays.deepToString(levelMap).replaceAll("\\],\\s+\\[",nl));
+        Level retVal = new Level(levelMap, startX, startY);
+        retVal.strMap = map;
         return retVal;
     }
 }

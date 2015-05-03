@@ -50,12 +50,14 @@ public class Dude {
         //it look shitty.
 
         //actually our screen is 6x21 ceil(21/2)=12;
-        for (int i = 0; i < map.getStartX() - 12; i++) {
+        for (int i = 0; i < map.getStartX() - Math.ceil(MainActivity.GRID_WIDTH / 2); i++) {
             //so this does nothing if getStartX<=12
             map.advanceRight();
         }
-        for (int i = 0; i < map.getStartY() - 6; i++) {
+        Log.d("INIT advance y", "startY:" + map.getStartY()+ ", gridheight-2 " + (MainActivity.GRID_HEIGHT - 2) + ", diff" + (map.getStartY() - MainActivity.GRID_HEIGHT - 2));
+        for (int i = 0; i < map.getStartY() - MainActivity.GRID_HEIGHT + 3; i++) {
             map.advanceUp();
+            Log.d("advanced up", "up");
         }
         //now place the dude in the starting position
         this.x = map.getStartX();
@@ -95,26 +97,30 @@ public class Dude {
                 //first, do we need to advance left or right
                 //if we have just advanced, and the edge of the map is not showing, then we need to shift
                 //middle of level                              left side, wall not showing yet                        right side, wall not showing yet
-                if (theDude.x > 12 && theDude.x < width - 10 || theDude.x <= 12 && theDude.map.getOffsetX() > 0 /*|| theDude.x >= width - 8 && theDude.map.getOffsetX() < width - 7*/) {
+                if (theDude.x > MainActivity.GRID_WIDTH / 2 && theDude.x < width - MainActivity.GRID_WIDTH / 2 || theDude.x <= MainActivity.GRID_WIDTH / 2 && theDude.map.getOffsetX() > 0 /*|| theDude.x >= width - 8 && theDude.map.getOffsetX() < width - 7*/) {
                     theDude.map.advanceX();
                 }
                 //if we went up or down, scroll accordingly
-                Log.d("went up?", "" + theDude.wentUp + "|");
                 if (dropped > 0 || theDude.verticalOrientation != 0) {
                     //if (theDude.y > 3 && theDude.y < height || theDude.y <= 4 && theDude.map.getOffsetY() > 4 || theDude.y > height - 6 && theDude.map.getOffsetY() < height - 3) {
                     //if dropped > 0)  then we need to do this multiple times, one for each level dropped
                     int iterations = dropped > 0 ? dropped : 1;
-
+                    if (dropped > 0) {
+                        Log.d("drop iterations", iterations + "");
+                    }
                     for (int i = 0; i < iterations; i++) {
                         //in the middle
                         //                       on the top, can't see ceiling                         on bottom, can't see floor
-                        Log.i("y,height,offsetY",theDude.y+", "+height+", "+theDude.map.getOffsetY());
-                        if (theDude.y > 3 && theDude.y < height - 7 || theDude.y <= 4 && theDude.map.getOffsetY() > 1 /*|| theDude.y > height - 7 && theDude.map.getOffsetY() < height - 6*/) {
+                        //Log.i("y,height,offsetY",theDude.y+", "+height+", "+theDude.map.getOffsetY());
+                        if (theDude.y > MainActivity.GRID_HEIGHT / 2 && theDude.y < height - MainActivity.GRID_HEIGHT || theDude.y <= MainActivity.GRID_HEIGHT / 2 && theDude.map.getOffsetY() > 0 || theDude.y >= height - MainActivity.GRID_HEIGHT && theDude.map.getOffsetY() < height - MainActivity.GRID_HEIGHT - 1  /* || theDude.y theDude.map.getOffsetY() < height -7*/ /*|| theDude.y > height - 7 && theDude.map.getOffsetY() < height - 6*/) {
                             Log.d("advance", "Y");
+                            Log.d("stand. y,height,offsety", theDude.y + "|" + height + "|" + theDude.map.getOffsetY());
                             theDude.map.advanceY();
+                        } else {
+                            Log.d("stand. y,height,offsety", theDude.y + "|" + height + "|" + theDude.map.getOffsetY());
                         }
                         if (theDude.verticalOrientation == 1) {
-                            Log.d("tried to go up.", "");
+                            //Log.d("tried to go up.", "");
                         }
                     }
                     //reset vertical orientation
@@ -122,10 +128,10 @@ public class Dude {
                 }
                 theDude.wentUp = false;
 
-                Log.d("theDude.x / y", "" + theDude.x + "," + theDude.y);
-                Log.d("map offset", "" + map.getOffsetX() + "," + map.getOffsetY());
-                Log.d("width x height", "" + width + " x " + height);
-                Log.d("", "");
+                // Log.d("theDude.x / y", "" + theDude.x + "," + theDude.y);
+                //Log.d("map offset", "" + map.getOffsetX() + "," + map.getOffsetY());
+                // Log.d("width x height", "" + width + " x " + height);
+                // Log.d("", "");
                 if (dropped > 0)
 
                 {

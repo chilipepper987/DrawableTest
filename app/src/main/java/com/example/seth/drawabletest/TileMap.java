@@ -12,7 +12,7 @@ public class TileMap {
     private int startX;
     private int startY;
     private int offsetX = 0;
-    private int offsetY = 1;
+    private int offsetY = 0;
     public String strMap[][];
 
 
@@ -92,7 +92,7 @@ public class TileMap {
      * @return Boolean success
      */
     public boolean advanceLeft() {
-        if (offsetX < this.map[0].length - 7) {
+        if (offsetX < this.map[0].length - (MainActivity.GRID_WIDTH / 2) - 1) {
             ++offsetX;
             return true;
         } else {
@@ -120,10 +120,11 @@ public class TileMap {
      * @return Boolean success
      */
     public boolean advanceUp() {
-        if (offsetY < this.map.length - 6) {
+        if (offsetY < this.map.length - MainActivity.GRID_HEIGHT) {
             ++offsetY;
             return true;
         } else {
+            Log.d("offset, height, grid",offsetY+","+this.map.length+","+MainActivity.GRID_HEIGHT);
             return false;
         }
     }
@@ -148,7 +149,7 @@ public class TileMap {
         } else {
             //we just moved right. can we see the edge?
 
-            if (getOffsetX() + 21 < map[0].length) {
+            if (getOffsetX() + MainActivity.GRID_WIDTH < map[0].length) {
                 //the map is 21 wide, so the right edge is 21 (or 20?) steps to the right from the left edge
                 advanceLeft();
                 moved = -1;
@@ -160,27 +161,32 @@ public class TileMap {
     public int advanceY() {
         int moved = 0;
         int direction = this.dude.verticalOrientation;
-        Log.d("direction", "" + direction);
-        Log.d("offset y before", "" + offsetY);
+        //Log.d("direction", "" + direction);
+       // Log.d("offset y before", "" + offsetY);
+        Log.d("direction",""+direction);
         if (direction == -1) {
             //we just moved down. can we see the bottom?
-            Log.d("moving down?", "" + getOffsetY());
-            if (getOffsetY() > 0) {
+           // Log.d("moving down?", "" + getOffsetY());
+            if (getOffsetY() + MainActivity.GRID_HEIGHT / 2 <= map.length) {
                 //the bottom is off screen. shift.
+                Log.d("about to","advance up");
                 advanceUp();
                 moved = 1;
             }
         } else {
             //we just moved up. can we see the top?
-            Log.d("moving up?", "" + getOffsetY() + "|" + map.length);
+          //  Log.d("moving up?", "" + getOffsetY() + "|" + map.length);
 
-            if (getOffsetY() + 4 <= map.length) {
+            if (getOffsetY() > 0) {
 
                 advanceDown();
                 moved = -1;
             }
+            else {
+                Log.d("half grid, height",(MainActivity.GRID_HEIGHT / 2)+","+map.length);
+            }
         }
-        Log.d("offset y AFTER", "" + offsetY);
+      //  Log.d("offset y AFTER", "" + offsetY);
         return moved;
     }
 
