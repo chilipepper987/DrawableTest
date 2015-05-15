@@ -119,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         //sample code, this will be a level-select drop down
-        String[] items = {"Level Select", "1", "2", "3", "4","5"};
+        String[] items = {"Level Select", "1", "2", "3", "4","5","6","7","8","9"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, items);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
