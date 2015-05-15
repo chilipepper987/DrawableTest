@@ -208,6 +208,10 @@ public class Dude {
                 // (and / or the block)
                 // so don't move
                 statusText = "That's a wall.";
+
+                //try to move up then
+                this.moveUp();
+
             } else {
                 //otherwise, we are safe
                 if (this.holdingRock) {
