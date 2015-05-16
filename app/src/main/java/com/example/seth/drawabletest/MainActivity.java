@@ -119,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         //sample code, this will be a level-select drop down
-        String[] items = {"Level Select", "1", "2", "3", "4","5","6","7","8","9"};
+        String[] items = {"Level Select", "1", "2", "3", "4","5","6","7","8","9","10"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, items);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -229,6 +229,8 @@ public class MainActivity extends ActionBarActivity {
             return false;
         });
 
+        //05/16 - removing W since a and d now move up automatically
+        /*
         //                                                      **
         //                                                    ||[]
         //W is the up button. press up to go up a stair, like:[][]
@@ -245,7 +247,7 @@ public class MainActivity extends ActionBarActivity {
                 }
 
         );
-
+    */
 
         View.OnClickListener rockListener = new View.OnClickListener() {
             @Override
