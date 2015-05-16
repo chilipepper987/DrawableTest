@@ -45,14 +45,6 @@
                 android:background="#00808080" />
 
 
-            <ImageButton
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@mipmap/arrow_up"
-                android:background="#00808080"
-                android:scaleType="fitCenter"
-                android:id="@+id/buttonW" />
             <TextView
                 android:text=""
                 android:layout_width="0dp"

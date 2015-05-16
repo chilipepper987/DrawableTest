@@ -105,7 +105,7 @@ public class MainActivity extends ActionBarActivity {
         status.setText("Howdy!");
 
         //assign handlers to the control buttons
-        ImageButton W = (ImageButton) findViewById(R.id.buttonW);
+        //ImageButton W = (ImageButton) findViewById(R.id.buttonW);
         ImageButton A = (ImageButton) findViewById(R.id.buttonA);
         //Button S = (Button) findViewById(R.id.buttonS);
         ImageButton D = (ImageButton) findViewById(R.id.buttonD);
